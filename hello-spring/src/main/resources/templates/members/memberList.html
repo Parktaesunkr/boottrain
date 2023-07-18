@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>데이터 출력</title>
+</head>
+<div class="container">
+  <div>
+    <table>
+      <thead>
+        <th>#</th>
+        <th>이름</th>
+      </thead>
+      <tbody>
+        <tr th:each="member:${members}">
+          <td th:text="${member.id}"></td>
+          <td th:text="${member.name}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</html>
