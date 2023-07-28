@@ -45,7 +45,7 @@
                    type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
                        [[${dto.bno}]]</a>
                 </th>
-                <td>[[${dto.title}]]</td>
+                <td>[[${dto.title}]]-----------------------[<b th:text="${dto.replyCount}"></b>]</td>
                 <td>[[${dto.writerName}]]<small>[[${writerEmail}]]</small></td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
             </tr>
