@@ -44,11 +44,42 @@
         <div>
             <div class="mt-4">
                 <h5>
+                    <span type="button" class="badge badge-info addReply">Add Reply</span>
+                </h5>
+                <h5>
                     <span type="button" class="badge badge-secondary replyCount">Reply Count[[${dto.replyCount}]]</span>
                 </h5>
             </div>
             <div class="list-group replyList">
 
+            </div>
+        </div>
+         <!--모달창 REPLYER 부분이 안 이뻐서 수정 할 것, 새로 단 댓글 폰트 스타일 확인 필요-->
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="replyText" placeholder="Reply Text...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="replyer" placeholder="Replyer">
+                        <input type="hidden" name="rno">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger replyRemove">Remove</button>
+                        <button type="button" class="btn btn-warning replyModify">Modify</button>
+                        <button type="button" class="btn btn-primary replySave">Save</button>
+                        <button type="button" class="btn btn-secondary replyClose" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -73,28 +104,68 @@
             date.getMinutes();
         }
 
-        $(".replyCount").click(function(){
-            $.getJSON('/replies/board/'+bno, function(arr){
-                console.log(arr);
+        $(".replyCount").click(function(){ // replyCount 클릭 시 작동
+            $.getJSON('/replies/board/'+bno, function(arr){ // /replies/board/bno 에 있는 JSON 데이터(댓글)를 가져옴
                 var str = "";
-                console.log(str);
 
-                $('.replyCount').html("Reply Count" + arr.length);
+                $('.replyCount').html("Reply Count" + arr.length); // 웹 화면에 댓글 갯수 출력
 
                 $.each(arr, function(idx, reply){
-                    console.log(reply);
-                    console.log("@@");
                     str += '<div class="card-body" data-rno="'+reply.rno+'"><b>'+
                         reply.rno+'<b>';
-                    str += '<h5 class="card-title">'+reply.text+'</h5>';
-                    str += '<h6 class="card-subtitle mb-2 text-muted">'+reply.replyer+'</h6>';
-                    str += '<p class="card-text">'+formatTime(reply.regDate)+'</p>';
+                    str += '<h5 class="card-title">'+reply.text+'</h5>'; // 댓글 내용
+                    str += '<h6 class="card-subtitle mb-2 text-muted">'+reply.replyer+'</h6>'; // 작성자
+                    str += '<p class="card-text">'+formatTime(reply.regDate)+'</p>'; // 작성 일
                     str += '</div>';
                 })
-                listGroup.html(str);
+                listGroup.html(str); // 목록으로 화면 출력
 
             }) // end getJSON
-             
+
         }) // end click
+    // 모달창
+    var modal = $('.modal');
+
+    $(".addReply").click(function(){
+
+        modal.modal('show'); // 모달창 보여줌
+
+           // 댓글 입력하는 부분 초기화
+        $('input[name="replyText"]').val(''); // replyText를 빈칸('')으로 만들어서 출력
+        $('input[name="replyer"]').val(''); // replyer를 빈칸('')으로 만들어서 출력
+
+        $(".modal-footer .btn").hide(); // 모달 내의 모든 버튼을 안보이도록
+        $(".replySave, .replyClose").show(); // 필요한 버튼들만 보이도록
     });
+
+    $(".replySave").click(function(){
+        var reply ={
+            bno : bno,
+            text : $('input[name="replyText"]').val(), // input 안에 내용을 댓글로 저장
+            replyer : $('input[name="replyer"]').val() // input 안에 내용을 작성자로 저장
+        }
+        console.log(reply); // 댓글 확인
+
+        $.ajax({ // post맨을 사용하지 않아됨(get 이외의 형식은 웹 브라우저가 작동하지 않음)
+            url : '/replies/',
+            method: 'post', // post 형식으로 전달
+            data: JSON.stringify(reply), // reply을 JSON형식으로 변환
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+
+                var newRno = parseInt(data); // 새로 등록된 댓글 번호
+
+                alert(newRno+"번 댓글이 등록되었습니다.")
+                modal.modal('hide'); // 모달창 숨기기
+                loadJSONData(); // JSON 데이터 출력
+                }
+        })
+    });
+
+    
+
+    });
+
 </script>
