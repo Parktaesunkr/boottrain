@@ -3,11 +3,16 @@ package org.zerock.mreview.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.zerock.mreview.entity.Movie;
 import org.zerock.mreview.entity.MovieImage;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -47,5 +52,18 @@ public class MovieRepositoryTests {
             System.out.println("==========================================");
         });
 
+    }
+
+    @Test
+    public void testListPage(){
+
+        PageRequest pageRequest =
+                PageRequest.of(0,10, Sort.by(Sort.Direction.DESC, "mno"));
+
+        Page<Object[]> result = movieRepository.getListPage(pageRequest);
+
+        for (Object[] objects : result.getContent()){
+            System.out.println(Arrays.toString(objects));
+        }
     }
 }
