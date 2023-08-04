@@ -19,7 +19,7 @@ public class Movie extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mno;
+    private Long mno; // 영화 번호
 
-    private String title;
+    private String title; // 영화 제목
 }

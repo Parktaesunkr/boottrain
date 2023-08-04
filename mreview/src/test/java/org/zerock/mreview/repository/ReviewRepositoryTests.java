@@ -8,6 +8,8 @@ import org.zerock.mreview.entity.Member;
 import org.zerock.mreview.entity.Movie;
 import org.zerock.mreview.entity.Review;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -36,6 +38,24 @@ public class ReviewRepositoryTests {
                     .build();
             reviewRepository.save(movieReview);
 
+        });
+    }
+
+    @Transactional
+    @Test
+    public void testGetMovieReviews(){
+        Movie movie = Movie.builder()
+                .mno(90L)
+                .build();
+
+        List<Review> result = reviewRepository.findByMovie(movie);
+
+        result.forEach(movieReview->{
+            System.out.println(movieReview.getReviewnum());
+            System.out.println("\t"+movieReview.getGrade());
+            System.out.println("\t"+movieReview.getText());
+            System.out.println("\t"+movieReview.getMember().getEmail()); // Lazy 때문에 에러 발생 대책은 레파지토리에
+            System.out.println("--------------------------------");
         });
     }
 

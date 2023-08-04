@@ -16,11 +16,11 @@ abstract class BaseEntity {
 
 
     @CreatedDate
-    @Column(name="regdate", updatable = false)
+    @Column(name="regdate", updatable = false) // 작성 시간 수정 불가
     private LocalDateTime regDate;
 
 
     @LastModifiedDate
-    @Column(name="moddate")
+    @Column(name="moddate") // 수정 시간
     private LocalDateTime modDate;
 }
